@@ -1,0 +1,4 @@
+/Users/whao/code_space/software-engineer-roadmap/cpp/01-object-lifetime/build/CMakeFiles/mini_unique_ptr.dir
+/Users/whao/code_space/software-engineer-roadmap/cpp/01-object-lifetime/build/CMakeFiles/test_exception.dir
+/Users/whao/code_space/software-engineer-roadmap/cpp/01-object-lifetime/build/CMakeFiles/edit_cache.dir
+/Users/whao/code_space/software-engineer-roadmap/cpp/01-object-lifetime/build/CMakeFiles/rebuild_cache.dir
