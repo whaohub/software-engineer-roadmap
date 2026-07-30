@@ -6,10 +6,15 @@
 src/01-array-string/
 ├── README.md                 # 本专题核心笔记
 ├── CMakeLists.txt            # 构建配置
-├── 01_two_pointers.cpp       # 双指针
-├── 02_sliding_window.cpp     # 滑动窗口
-├── 03_prefix_sum.cpp         # 前缀和
-└── 05_string_basics.cpp      # 字符串高频技巧
+├── 01_two_pointers.cpp       # 双指针 — 实现
+├── 02_sliding_window.cpp     # 滑动窗口 — 实现
+├── 03_prefix_sum.cpp         # 前缀和 — 实现
+├── 05_string_basics.cpp      # 字符串高频技巧 — 实现
+└── tests/                    # 单元测试（gtest）
+    ├── 01_two_pointers_test.cpp
+    ├── 02_sliding_window_test.cpp
+    ├── 03_prefix_sum_test.cpp
+    └── 05_string_basics_test.cpp
 ```
 
 ---

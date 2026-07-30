@@ -1,0 +1,5 @@
+
+class RAIIFile{
+public:
+  RAIIFile(){}
+};
