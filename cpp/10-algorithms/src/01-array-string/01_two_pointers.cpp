@@ -41,7 +41,32 @@ vector<int> twoSum(vector<int> &numbers, int target) {
 // 要求：返回容器能盛的最大水量（面积 = 宽度 × 较短线高度）
 // 约束：n ∈ [2, 10^5]，不可倾斜容器
 // 思路：左右指针从两端向中间移动，每次移动较短的那条线（因为移动长线水量只会减少）
-int maxArea(vector<int> &height);
+int maxAreaBF(vector<int> &height) {
+  const auto len = height.size();
+  int max = 0;
+  for (int i = 0; i < len; i++) {
+    for (int j = i + 1; j < len; j++) {
+      const auto value = std::min(height[i], height[j]) * (j - i);
+      max = std::max(value, max);
+    }
+  }
+  return max;
+};
+int maxArea(vector<int> &height) {
+  const auto len = height.size();
+  int l = 0, r = height.size() - 1;
+  int max = 0;
+  while (l < r) {
+    max = std::max(std::min(height[l], height[r]) * (r - l), max);
+
+    if (height[l] > height[r]) {
+      --r;
+    } else {
+      ++l;
+    }
+  }
+  return max;
+}
 
 // ============================================================
 // 模式二：快慢指针

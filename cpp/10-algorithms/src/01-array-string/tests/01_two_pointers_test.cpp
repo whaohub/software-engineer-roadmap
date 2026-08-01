@@ -39,5 +39,33 @@ TEST(TwoSumTest, NoSolution) {
   EXPECT_EQ(twoSum(nums, 100), expected);
 }
 
-// ---- [M] maxArea (LC 11, 待实现) ----
-// TODO: 实现 maxArea 后补充测试
+// ---- [M] maxArea (LC 11) ----
+TEST(MaxAreaTest, BasicCase) {
+  vector<int> height = {1, 8, 6, 2, 5, 4, 8, 3, 7};
+  EXPECT_EQ(maxArea(height), 49);
+}
+
+TEST(MaxAreaTest, TwoElements) {
+  vector<int> height = {1, 1};
+  EXPECT_EQ(maxArea(height), 1);
+}
+
+TEST(MaxAreaTest, Ascending) {
+  vector<int> height = {1, 2, 4, 3};
+  EXPECT_EQ(maxArea(height), 4);
+}
+
+TEST(MaxAreaTest, Descending) {
+  vector<int> height = {4, 3, 2, 1};
+  EXPECT_EQ(maxArea(height), 4);
+}
+
+TEST(MaxAreaTest, AllSame) {
+  vector<int> height = {1, 1, 1, 1};
+  EXPECT_EQ(maxArea(height), 3);
+}
+
+TEST(MaxAreaTest, PeakInMiddle) {
+  vector<int> height = {1, 2, 1};
+  EXPECT_EQ(maxArea(height), 2);
+}
