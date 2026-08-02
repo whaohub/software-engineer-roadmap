@@ -77,7 +77,34 @@ int maxArea(vector<int> &height) {
 // 要求：返回新长度 k，前 k 个位置存放不重复元素（顺序不变）
 // 约束：O(1) 额外空间，数组已非降序排列
 // 思路：slow 标记不重复元素待插入位置，fast 遍历扫描新元素
-int removeDuplicates(vector<int> &nums);
+int removeDuplicatesBF(vector<int> &nums) {
+  int k = nums.size();
+  int i = 0;
+  while (i < k - 1) {
+    if (nums[i] == nums[i + 1]) {
+      for (int j = i; j < k - 1; ++j) {
+        nums[j] = nums[j + 1];
+      }
+      k--;
+    } else {
+      ++i;
+    }
+  }
+  return k;
+};
+int removeDuplicates(vector<int> &nums) {
+  if (nums.empty()) {
+    return 0;
+  }
+  int slow = 0;
+  for (int fast = 1; fast < nums.size(); ++fast) {
+    if (nums[slow] != nums[fast]) {
+      nums[slow + 1] = nums[fast];
+      slow++;
+    }
+  }
+  return slow + 1;
+}
 
 // [E] LC 27 — 移除元素 🟢
 // 题目：原地移除数组中所有等于 val 的元素

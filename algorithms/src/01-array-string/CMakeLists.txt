@@ -10,7 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # 共享第三方依赖（gtest）
 # ============================================================
 add_subdirectory(
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cpp/third_party
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../third_party
   ${CMAKE_BINARY_DIR}/third_party
 )
 
