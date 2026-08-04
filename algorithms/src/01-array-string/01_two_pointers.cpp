@@ -111,14 +111,37 @@ int removeDuplicates(vector<int> &nums) {
 // 要求：返回新长度 k，前 k 个位置存放不等于 val 的元素（顺序不限）
 // 约束：O(1) 额外空间，数组长度 [0, 100]
 // 思路：slow 标记非 val 元素待插入位置，fast 遍历数组
-int removeElement(vector<int> &nums, int val);
+int removeElement(vector<int> &nums, int val) {
+  if (nums.empty()) {
+    return 0;
+  }
+
+  int slow = 0;
+  for (int fast = 0; fast < nums.size(); ++fast) {
+    if (nums[fast] != val) {
+      nums[slow] = nums[fast];
+      ++slow;
+    }
+  }
+  return slow;
+};
 
 // [E] LC 283 — 移动零 🟢
 // 题目：将所有 0 移到数组末尾，同时保持非零元素的相对顺序
 // 要求：原地操作，不得复制数组
 // 约束：O(1) 额外空间，数组长度 [1, 10^4]
 // 思路：快指针遍历数组，将非零元素交换到慢指针位置，遍历完成后所有 0 自然在末尾
-void moveZeroes(vector<int> &nums);
+void moveZeroes(vector<int> &nums) {
+  int slow = 0;
+  for (int fast = 0; fast < nums.size(); ++fast) {
+    if (nums[fast] != 0) {
+      int tmp = nums[slow];
+      nums[slow] = nums[fast];
+      nums[fast] = tmp;
+      ++slow;
+    }
+  }
+};
 
 // ============================================================
 // 模式三：定一移二
