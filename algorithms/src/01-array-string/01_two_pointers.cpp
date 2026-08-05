@@ -153,4 +153,60 @@ void moveZeroes(vector<int> &nums) {
 // 约束：数组长度 [3, 3000]，值范围 [-10^5, 10^5]
 // 思路：排序 + 固定 i（最外层去重）+ 左右双指针找两数之和
 //       三重去重：i 跳过同值，左指针跳过同值，右指针跳过同值
-vector<vector<int>> threeSum(vector<int> &nums);
+vector<vector<int>> threeSumBF(vector<int> &nums) {
+  int len = nums.size();
+  std::vector<std::vector<int>> result;
+
+  for (int i = 0; i < len - 2; ++i) {
+    for (int j = i + 1; j < len - 1; ++j) {
+      for (int k = j + 1; k < len; ++k)
+        if (nums[i] + nums[j] + nums[k] == 0) {
+          result.push_back({nums[i], nums[j], nums[k]});
+        }
+    }
+  }
+
+  return result;
+};
+
+// 优化固定一个数i情况,三数之和相当于查找nums[j]+nums[k] =-nums[i].变为two
+// sum,同理k数之和,实际为(k-1)sum 排序 + two sum
+
+vector<vector<int>> threeSum(vector<int> &nums) {
+  std::sort(nums.begin(), nums.end());
+
+  int n = static_cast<int>(nums.size()); // 避免无符号下溢（underflow）
+
+  std::vector<std::vector<int>> result;
+  for (int i = 0; i < n - 2; ++i) {
+    if (nums[i] > 0)
+      break;
+
+    if (i > 0 && nums[i] == nums[i - 1])
+      continue;
+
+    int left = i + 1;
+    int right = n - 1;
+    auto target = -nums[i];
+    while (left < right) {
+      auto sum = nums[left] + nums[right];
+      if (sum > target) {
+        right--;
+      } else if (sum < target) {
+        left++;
+      } else {
+        result.push_back({nums[i], nums[left], nums[right]});
+        right--;
+        while (left < right && nums[right] == nums[right + 1]) {
+          right--;
+        }
+        left++;
+        while (left < right && nums[left] == nums[left - 1]) {
+
+          left++;
+        }
+      }
+    }
+  }
+  return result;
+};
