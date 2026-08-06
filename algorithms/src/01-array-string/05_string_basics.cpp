@@ -5,6 +5,7 @@
 #include <cctype>
 #include <stack>
 #include <string>
+#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -58,10 +59,27 @@ bool isPalindrome(string s) {
 示例 2：
 输入: s = "rat", t = "car"
 输出: false */
-
+// 思路:
 bool isAnagram(string s, string t) {
-  // TODO: 实现
-  return false;
+  if (s.size() != t.size()) {
+    return false;
+  }
+
+  int count[26] = {0};
+
+  for (const auto &c : s) {
+    count[c - 'a']++;
+  }
+
+  for (const auto &c : t) {
+    count[c - 'a']--;
+  }
+
+  for (int i = 0; i < 26; ++i) {
+    if (count[i] != 0)
+      return false;
+  }
+  return true;
 }
 
 // [E] LC 14 — 最长公共前缀 🟢
@@ -79,8 +97,21 @@ bool isAnagram(string s, string t) {
 输出: "" */
 
 string longestCommonPrefix(vector<string> &strs) {
-  // TODO: 实现
-  return "";
+  if (strs.empty())
+    return "";
+
+  for (int i = 0; i < strs[0].size(); ++i) {
+    char c = strs[0][i];
+
+    int len = strs.size();
+    for (int j = 1; j < len; ++j) {
+      if (i >= strs[j].size() || strs[j][i] != c) {
+        return strs[0].substr(0, i);
+      }
+    }
+  }
+
+  return strs[0];
 }
 
 // [E] LC 20 — 有效括号 🟢
@@ -97,16 +128,44 @@ string longestCommonPrefix(vector<string> &strs) {
 输出: true
 
 示例 2：
-输入: s = "()[]{}"
+输入: s = ""([])"
 输出: true
 
 示例 3：
 输入: s = "(]"
 输出: false */
 
+// bug: stack empty 访问
+bool isValidV1(string s) {
+  std::stack<char> stack;
+  for (auto c : s) {
+    if (c == '(' || c == '[' || c == '{')
+      stack.push(c);
+    else if ((c == ')' && stack.top() == '(') ||
+             (c == ']' && stack.top() == '[') ||
+             (c == '}' && stack.top() == '{'))
+      stack.pop();
+    else
+      return false;
+  }
+
+  return stack.empty();
+}
+
 bool isValid(string s) {
-  // TODO: 实现
-  return false;
+  stack<char> st;
+  std::unordered_map<char, char> pairs = {{')', '('}, {']', '['}, {'}', '{'}};
+
+  for (const auto c : s) {
+    if (!pairs[c])
+      st.push(c);
+    else {
+      if (st.empty() || pairs[c] != st.top())
+        return false;
+      st.pop();
+    }
+  }
+  return st.empty();
 }
 
 // [M] LC 5 — 最长回文子串 🟠
