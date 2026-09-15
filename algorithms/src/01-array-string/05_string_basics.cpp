@@ -46,6 +46,26 @@ bool isPalindrome(string s) {
   return true;
 }
 
+// [M] LC 5 — 最长回文子串 🟠
+// 给你一个字符串 s，找到 s 中最长的回文子串
+// 复杂度：时间 O(n²) | 空间 O(1)，中心扩展法；更优：Manacher 算法 O(n)
+
+/* 示例 1：
+输入: s = "babad"
+输出: "bab"
+解释: "aba" 同样是符合题意的答案。
+
+示例 2：
+输入: s = "cbbd"
+输出: "bb" */
+
+string longestPalindrome(string s) {
+  // TODO: 实现
+  return "";
+}
+
+
+
 // [E] LC 242 — 有效字母异位词 🟢
 // 给定两个字符串 s 和 t，判断 t 是否是 s 的字母异位词
 // 复杂度：时间 O(n) | 空间 O(1)，字符频率计数，n 为较长字符串长度
@@ -168,20 +188,4 @@ bool isValid(string s) {
   return st.empty();
 }
 
-// [M] LC 5 — 最长回文子串 🟠
-// 给你一个字符串 s，找到 s 中最长的回文子串
-// 复杂度：时间 O(n²) | 空间 O(1)，中心扩展法；更优：Manacher 算法 O(n)
 
-/* 示例 1：
-输入: s = "babad"
-输出: "bab"
-解释: "aba" 同样是符合题意的答案。
-
-示例 2：
-输入: s = "cbbd"
-输出: "bb" */
-
-string longestPalindrome(string s) {
-  // TODO: 实现
-  return "";
-}
