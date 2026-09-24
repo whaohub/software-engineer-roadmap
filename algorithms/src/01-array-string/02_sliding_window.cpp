@@ -10,6 +10,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 using namespace std;
 
@@ -33,12 +34,14 @@ int lengthOfLongestSubstringBF(string s) {
 
   int max_len = 0;
   for (size_t i = 0; i < s.length(); ++i) {
-    std::set<char> sub_str{s[i]};
-    int j = i + 1;
-    while (sub_str.count(s[j])) {
-      sub_str.insert(s[j]);
+    std::unordered_set<char> seen;
+    for (int j = i; j < s.length(); ++j) {
+      if (seen.count(s[j])) {
+        break;
+      }
+      seen.insert(s[j]);
     }
-    max_len = std::max(max_len, static_cast<int>(sub_str.size()));
+    max_len = std::max(max_len, static_cast<int>(seen.size()));
   }
 
   return max_len;
