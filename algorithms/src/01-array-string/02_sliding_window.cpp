@@ -7,6 +7,7 @@
 // ============================================================
 
 #include <algorithm>
+#include <climits>
 #include <cstddef>
 #include <set>
 #include <string>
@@ -76,9 +77,22 @@ int lengthOfLongestSubstring(string s) {
 // 输入：target = 7, nums = [2,3,1,2,4,3]
 // 输出：2
 // 解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+// - 窗口有效: sum >= target
+// - 遇到满足: 收缩左边界
 int minSubArrayLen(int target, vector<int> &nums) {
-  // TODO: 实现
-  return 0;
+
+  int min_len = INT_MAX;
+  int sum = 0;
+  size_t left = 0;
+  for (size_t right = 0; right < nums.size(); ++right) {
+    sum += nums[right];
+    while (sum >= target) {
+      min_len = std::min(min_len, static_cast<int>(right - left + 1));
+      sum -= nums[left];
+      left++;
+    }
+  }
+  return min_len == INT_MAX ? 0 : min_len;
 }
 
 // [M] LC 424 — 替换后的最长重复字符 🟠

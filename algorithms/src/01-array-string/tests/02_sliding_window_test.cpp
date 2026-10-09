@@ -102,3 +102,89 @@ TEST(LengthOfLongestSubstringTest, LargeInputLinearTime) {
   }
   EXPECT_EQ(lengthOfLongestSubstring(s), 52);
 }
+
+// ============================================================
+// [M] LC 209 长度最小的子数组
+// ============================================================
+
+// ------------------------------------------------------------
+// 常规用例
+// ------------------------------------------------------------
+
+TEST(MinSubArrayLenTest, BasicCase) {
+  vector<int> nums = {2, 3, 1, 2, 4, 3};
+  EXPECT_EQ(minSubArrayLen(7, nums), 2); // [4,3]
+}
+
+TEST(MinSubArrayLenTest, SingleElementWindow) {
+  vector<int> nums = {1, 4, 4};
+  EXPECT_EQ(minSubArrayLen(4, nums), 1); // [4]
+}
+
+TEST(MinSubArrayLenTest, NoSuchSubArray) {
+  vector<int> nums = {1, 1, 1, 1, 1, 1, 1, 1}; // 总和 8 < 11
+  EXPECT_EQ(minSubArrayLen(11, nums), 0);
+}
+
+// ------------------------------------------------------------
+// 边界用例
+// ------------------------------------------------------------
+
+TEST(MinSubArrayLenTest, SingleElementMiss) {
+  vector<int> nums = {1};
+  EXPECT_EQ(minSubArrayLen(5, nums), 0);
+}
+
+TEST(MinSubArrayLenTest, ExactTotalSum) {
+  vector<int> nums = {1, 2, 3}; // 必须取满整个数组
+  EXPECT_EQ(minSubArrayLen(6, nums), 3);
+}
+
+TEST(MinSubArrayLenTest, WholeArrayRequired) {
+  vector<int> nums = {1, 2, 3, 4, 5}; // 总和 15，只有整段达标
+  EXPECT_EQ(minSubArrayLen(15, nums), 5);
+}
+
+TEST(MinSubArrayLenTest, TotalSumBelowTarget) {
+  vector<int> nums = {1, 2, 3}; // 总和 6 < 100
+  EXPECT_EQ(minSubArrayLen(100, nums), 0);
+}
+
+// ------------------------------------------------------------
+// 易错用例
+// ------------------------------------------------------------
+
+TEST(MinSubArrayLenTest, BestWindowAtTheEnd) {
+  // 最优窗口恰好在最后一个元素处才闭合：[4,3]
+  // 若收缩逻辑放在"加入新元素之前"，该窗口永远不会被校验
+  vector<int> nums = {1, 1, 1, 1, 4, 3};
+  EXPECT_EQ(minSubArrayLen(7, nums), 2);
+}
+
+TEST(MinSubArrayLenTest, BestWindowAtHead) {
+  // 最优解在头部，验证 left 只增不减不会漏掉前缀答案
+  vector<int> nums = {10, 1, 10};
+  EXPECT_EQ(minSubArrayLen(11, nums), 2); // [10,1]
+}
+
+TEST(MinSubArrayLenTest, ShrinkMultipleTimes) {
+  // 单个窗口需连续收缩两次才回到 < target：4 个元素和 12 才达标
+  vector<int> nums = {3, 3, 3, 3, 3, 3};
+  EXPECT_EQ(minSubArrayLen(10, nums), 4);
+}
+
+TEST(MinSubArrayLenTest, WindowMustBeContiguous) {
+  // 答案 [3,4] 长度为 2；若误按"子序列"思路会算出更短的组合
+  vector<int> nums = {1, 2, 3, 4, 5};
+  EXPECT_EQ(minSubArrayLen(6, nums), 2);
+}
+
+// ------------------------------------------------------------
+// 规模用例（验证不退化）
+// ------------------------------------------------------------
+
+TEST(MinSubArrayLenTest, LargeInputLinearTime) {
+  // n = 100000，暴力枚举 O(n²) 会超时，正确实现应线性完成
+  vector<int> nums(100000, 1);
+  EXPECT_EQ(minSubArrayLen(1000, nums), 1000);
+}
