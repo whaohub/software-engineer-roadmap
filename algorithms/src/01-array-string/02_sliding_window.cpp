@@ -7,6 +7,7 @@
 // ============================================================
 
 #include <algorithm>
+#include <cstddef>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -47,7 +48,34 @@ int lengthOfLongestSubstringBF(string s) {
   return max_len;
 }
 
+// BF: 第一轮计算bc后,下一轮依然计算,每次会重复计算
+// 优化: s[left...right] 中没有重复字符，并且 seen 恰好保存这个窗口里的字符。
+// - 窗口有效：没有重复字符。
+// - 遇到重复字符：收缩左边界，直到恢复有效。
+// - 窗口有效时：更新最大长度
+int lengthOfLongestSubstring(string s) {
+  int max_len = 0;
+
+  size_t left = 0;
+
+  std::unordered_set<char> seen;
+  for (size_t right = 0; right < s.length(); ++right) {
+    while (seen.count(s[right])) {
+      seen.erase(left);
+      left++;
+    }
+    seen.insert(s[right]);
+    max_len = std::max(max_len, static_cast<int>(seen.size()));
+  }
+
+  return max_len;
+}
+
 // [M] LC 209 — 长度最小的子数组 🟠
+// 找出该数组中满足其总和 大于等于 target 的长度最小的 连续子数组
+// 输入：target = 7, nums = [2,3,1,2,4,3]
+// 输出：2
+// 解释：子数组 [4,3] 是该条件下的长度最小的子数组。
 int minSubArrayLen(int target, vector<int> &nums) {
   // TODO: 实现
   return 0;
