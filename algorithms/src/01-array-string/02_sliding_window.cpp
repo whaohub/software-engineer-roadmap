@@ -7,6 +7,7 @@
 // ============================================================
 
 #include <algorithm>
+#include <array>
 #include <climits>
 #include <cstddef>
 #include <set>
@@ -96,12 +97,39 @@ int minSubArrayLen(int target, vector<int> &nums) {
 }
 
 // [M] LC 424 — 替换后的最长重复字符 🟠
+// 给你一个字符串 s 和一个整数
+// k。你可以选择字符串中的任一字符，并将其替换成任何其他大写英文字母。此操作最多可执行
+// k 次 输入：s = "ABAB", k = 2 输出：4 解释：用两个 'A' 替换为两个
+// 'B'，反之亦然，得到 "AAAA" 或 "BBBB"。 复杂度 时间：O(n)
+// 空间：O(1)，字符集合下为 26 个大写字母
+//
+// 窗口有效: sub_len-dupcount<=k
 int characterReplacement(string s, int k) {
-  // TODO: 实现
-  return 0;
+
+  int max_len = 0;
+  int max_frep = 0;
+
+  array<int, 26> count{};
+  size_t left = 0;
+
+  for (size_t right = 0; right < s.length(); ++right) {
+    auto idx = s[right] - 'A';
+    ++count[idx];
+    max_frep = std::max(max_frep, count[idx]);
+    while ((right - left + 1 - max_frep) > k) {
+      --count[s[left] - 'A'];
+      left++;
+    }
+    max_len = std::max(max_len, static_cast<int>(right - left + 1));
+  }
+  return max_len;
 }
 
 // [M] LC 438 — 找到字符串中所有字母异位词 🟠
+// 输入: s = "cbaebabacd", p = "abc"
+// 输出: [0,6]
+// 解释:
+// 起始索引等于 0 的子串是 "cba", 它是 "abc" 的字母异位词。
 vector<int> findAnagrams(string s, string p) {
   // TODO: 实现
   return {};

@@ -188,3 +188,75 @@ TEST(MinSubArrayLenTest, LargeInputLinearTime) {
   vector<int> nums(100000, 1);
   EXPECT_EQ(minSubArrayLen(1000, nums), 1000);
 }
+
+// ============================================================
+// [M] LC 424 替换后的最长重复字符
+// ============================================================
+
+// ------------------------------------------------------------
+// 常规用例
+// ------------------------------------------------------------
+
+TEST(CharacterReplacementTest, BasicCase) {
+  EXPECT_EQ(characterReplacement("ABAB", 2), 4); // 全替换成 A 或 B
+}
+
+TEST(CharacterReplacementTest, LeetCodeSample) {
+  EXPECT_EQ(characterReplacement("AABABBA", 1), 4); // "AABA" / "BABB"
+}
+
+TEST(CharacterReplacementTest, ShortWindowExtended) {
+  EXPECT_EQ(characterReplacement("ABBB", 1), 4); // A→B，need = 4-3 = 1
+}
+
+// ------------------------------------------------------------
+// 边界用例
+// ------------------------------------------------------------
+
+TEST(CharacterReplacementTest, EmptyString) {
+  EXPECT_EQ(characterReplacement("", 0), 0);
+}
+
+TEST(CharacterReplacementTest, SingleCharacter) {
+  EXPECT_EQ(characterReplacement("A", 0), 1); // 无需替换
+}
+
+TEST(CharacterReplacementTest, AllSameCharacters) {
+  EXPECT_EQ(characterReplacement("AAAA", 2), 4); // 本来就全同，k 用不上
+}
+
+TEST(CharacterReplacementTest, KReplacesAll) {
+  EXPECT_EQ(characterReplacement("ABCDE", 5), 5); // need = 5-1 = 4 <= 5
+}
+
+// ------------------------------------------------------------
+// 易错用例
+// ------------------------------------------------------------
+
+TEST(CharacterReplacementTest, BestWindowStartsAtSecondChar) {
+  // 最优窗口是 [1..4]="BBBA"（need = 4-3 = 1）；若 max_cnt 随收缩回退会得到 3
+  EXPECT_EQ(characterReplacement("ABBBAAA", 1), 4);
+}
+
+TEST(CharacterReplacementTest, MajorityLetterChanges) {
+  // 最优窗口跨越 A/B 分界："AAAAABB" 长度 7，need = 7-5 = 2
+  EXPECT_EQ(characterReplacement("AAAAABBBBB", 2), 7);
+}
+
+TEST(CharacterReplacementTest, SingleReplacementUnifies) {
+  EXPECT_EQ(characterReplacement("AABAA", 1), 5); // 一个 B 换掉即全 A
+}
+
+TEST(CharacterReplacementTest, ZeroKKeepsLongestRun) {
+  EXPECT_EQ(characterReplacement("AABBA", 0), 2); // k=0 退化为最长连续同字符
+}
+
+// ------------------------------------------------------------
+// 规模用例（验证不退化）
+// ------------------------------------------------------------
+
+TEST(CharacterReplacementTest, LargeInputLinearTime) {
+  // n = 100000，暴力枚举 O(n²) 会超时；末尾一个 'B' 被替换掉
+  string s = string(99999, 'A') + "B";
+  EXPECT_EQ(characterReplacement(s, 1), 100000);
+}
