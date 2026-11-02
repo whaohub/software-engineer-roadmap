@@ -35,9 +35,15 @@
 // 易错：while (fast && fast->next) → 偶数长度返回第二个中点（符合本题要求）；
 //       若写成 while (fast->next && fast->next->next) 则返回第一个中点
 ListNode *middleNode(ListNode *head) {
-  (void)head;
-  // TODO: 实现
-  return nullptr;
+  auto *slow = head;
+  auto *fast = head;
+
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+
+  return slow;
 }
 
 // ============================================================
@@ -53,8 +59,16 @@ ListNode *middleNode(ListNode *head) {
 // 预期复杂度：时间 O(n) | 空间 O(1)
 // 补充：也可用哈希表存已访问结点，时间 O(n) / 空间 O(n)
 bool hasCycle(ListNode *head) {
-  (void)head;
-  // TODO: 实现
+  auto *slow = head;
+  auto *fast = head;
+
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+    if (fast == slow) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -93,8 +107,13 @@ ListNode *detectCycle(ListNode *head) {
 // 预期复杂度：时间 O(m + n) | 空间 O(1)
 // 易错：比较的是「指针」而非 val（值相等不代表同一个结点）
 ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-  (void)headA;
-  (void)headB;
-  // TODO: 实现
-  return nullptr;
+  auto *pa = headA;
+  auto *pb = headB;
+
+  while (pa != pb) {
+    pa = (pa == nullptr) ? headB : pa->next;
+    pb = (pb == nullptr) ? headA : pb->next;
+  }
+
+  return pa;
 }
