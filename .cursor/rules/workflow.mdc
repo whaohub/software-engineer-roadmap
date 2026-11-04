@@ -1,0 +1,34 @@
+---
+description: 学习仓库工作流（阶段计划 / 下一步指针 / 四件套交付标准）
+globs:
+alwaysApply: true
+---
+
+# 规则来源
+
+本仓库的所有约定只有一份事实源：根目录 **[AGENTS.md](../../AGENTS.md)**。
+本文件只是 Cursor 的入口指针，**不要在这里重复规则**。
+
+# 每次会话开场（必须执行）
+
+1. 运行 `make status`（或 `./scripts/status.sh`）拿到上下文：当前阶段 / 下一步 / 未提交改动
+2. 读 `NEXT.md` 的「现在做」，它就是本次会话的**唯一**产出
+3. **不要通读整个仓库**，只读 `NEXT.md` 指向的文件
+
+# 硬性约束
+
+- 一次只推进一个专题；完成标准 = 文档 + 可运行 demo + 实测数据 + 自测卡
+- ⛔ 不新建空专题目录
+- ⛔ 不提交 `build/` 产物、二进制、密钥
+- ⛔ 不改写 git 历史、不擅自 `git push`、不丢弃他人未提交改动
+- 所有结论必须有证据（gtest 通过 / benchmark / perf 输出）
+
+# 收工动作
+
+1. `make check` 必须通过
+2. 更新 `NEXT.md`（≤3 条，带验收命令）与 `PROGRESS.md`（追加一行）
+3. `git add -A && git commit -m "<type>(<scope>): <中文摘要>"`
+
+# 遇到工作区有别人的 WIP
+
+先停下来问我，不要 stash / checkout / discard。

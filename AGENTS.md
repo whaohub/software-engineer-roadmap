@@ -6,8 +6,11 @@
 ## 0. 30 秒上手（新机器 / 新 agent / 新会话）
 
 ```bash
-./scripts/status.sh     # 一行命令拿到全部上下文
+make status             # 等价于 ./scripts/status.sh，任何终端/agent 都能跑
 ```
+
+所有脚本都包了一层 `make`（`make status|check|bootstrap|test|demo`），
+IDE 里的 agent（Copilot Agent / Cursor / Claude Code）直接跑 `make xxx` 最稳。
 
 只读它输出的文件，**不要通读整个仓库**（上下文预算有限，仓库会越来越大）。
 需要动手时按顺序读：`NEXT.md` → `PROGRESS.md` 最近 3 条 → 该专题的 README/现有文档。
@@ -100,3 +103,49 @@ scope: cpp/04 | linux/03 | middleware/02 | algorithms/02 | plan | scripts
 > 遵守 `AGENTS.md` 的铁律：不新建空专题、不提交构建产物、结论必须有证据。
 > 完成后：跑 `./scripts/check.sh`，更新 `NEXT.md` + `PROGRESS.md`，按规范提交。
 > 如果发现工作区有未提交改动且不属于本次任务，先停下来问我。
+
+## 8. 在 IDE 里工作（VS Code / Cursor / Copilot / Claude Code）
+
+### 8.1 各家读哪个文件
+
+| 工具 | 自动读取 | 本仓库状态 |
+|---|---|---|
+| GitHub Copilot（Chat / Agent mode） | `.github/copilot-instructions.md`（部分版本也读 `AGENTS.md`） | ✅ 已建（指针） |
+| Cursor | `.cursor/rules/*.mdc`、新版也读 `AGENTS.md` | ✅ 已建 |
+| Claude Code（VS Code 扩展 / CLI） | `CLAUDE.md`（`@AGENTS.md` 导入） | ✅ 已建 |
+| Codex / Amp / Gemini CLI | `AGENTS.md` | ✅ 已建 |
+| Cline / Roo | `.clinerules` | ⬜ 需要时再加 |
+
+> 原则：**规则只写在 `AGENTS.md`**，其它文件都只是指针，避免同一规则多份漂移。
+
+### 8.2 每次开新会话，粘这一句（所有 IDE agent 通用）
+
+```
+先运行 make status 了解上下文，然后按 NEXT.md 的「现在做」只推进一件事。
+遵守 AGENTS.md：不新建空专题、不提交 build 产物、结论文档必须有证据（测试/benchmark）。
+完成后运行 make check，更新 NEXT.md 和 PROGRESS.md，并按提交规范 commit。
+如果工作区有未提交改动且不属于本次任务，先停下来问我。
+```
+
+### 8.3 IDE 里要开的两项设置（否则 agent 会卡在审批）
+
+| 设置 | 位置 | 建议 |
+|---|---|---|
+| 允许终端命令 | Copilot: `Chat › Agent: Terminal Auto Approve` | 至少放行 `make`、`./scripts/*`、`git status/diff` |
+| 允许编辑文件 | 默认允许，但保留 `undo` | 大改动前先 commit，便于回滚 |
+
+### 8.4 快捷任务（不用记命令）
+
+`.vscode/tasks.json` 已提交到仓库，`Cmd+Shift+P → Tasks: Run Task` 可选：
+`status: 上下文全景` / `check: 仓库验收` / `test: 构建并跑专题测试` / `demo: 编译并运行当前 C++ 文件` / `bootstrap: 工具链自检`。
+（`build/` 与 `.vscode/*` 被忽略，但 `tasks.json`/`settings.json` 已用 `!` 例外纳入版本库，换电脑也在。）
+
+### 8.5 IDE agent 的已知短板与对策
+
+| 短板 | 对策 |
+|---|---|
+| 喜欢"通读整个仓库"吃撑上下文 | 明确说「只读 `NEXT.md` 指向的文件」；仓库越大越要强调 |
+| 会话不持久，第二天从零开始 | 这正是 `NEXT.md` + `PROGRESS.md` 存在的意义：**先读这两个** |
+| 可能顺手重构无关文件 | 铁律第 2 条 + 要求"改动前先说明要动哪些文件" |
+| 不能弹 `sudo`/`chsh` | 这类操作写到 `NEXT.md` 的"阻塞"，人工执行 |
+| 终端输出被截断 | 让 agent 跑 `make check > /tmp/check.log 2>&1; tail -50 /tmp/check.log` |

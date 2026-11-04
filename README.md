@@ -7,7 +7,7 @@ C++ 面试题知识库，按主题分类，每题包含代码实现与关键要�
 ```bash
 git clone <repo> && cd software-engineer-roadmap
 ./scripts/bootstrap.sh     # 工具链自检（首次）
-./scripts/status.sh        # 一键拿到：当前阶段 / 下一步 / 未提交改动
+make status                # 一键拿到：当前阶段 / 下一步 / 未提交改动
 ```
 
 然后**只读** `NEXT.md` 指向的文件，不要通读全仓。约定见 **[AGENTS.md](./AGENTS.md)**。
@@ -19,6 +19,8 @@ git clone <repo> && cd software-engineer-roadmap
 | [PROGRESS.md](./PROGRESS.md) | 阶段状态 + 会话日志（跨设备恢复上下文靠它 + `git log`） |
 | [PLAN.md](./PLAN.md) | 五阶段计划、四件套标准、AI 时代重点 |
 | `scripts/` | `status.sh` 上下文 / `check.sh` 验收 / `bootstrap.sh` 环境 |
+| `Makefile` | 统一入口：`make status/check/test/demo`（IDE agent 直接用） |
+| `.vscode/tasks.json` | VS Code 任务面板（已入库，换机器也在） |
 
 > 📌 **学习规划见 [PLAN.md](./PLAN.md)**（阶段划分、每周节奏、交付标准、AI 时代重点）
 > 现状：28 个专题中 4 个有实质内容（14%）—— 策略已改为**串行深挖，停止横向铺骨架**。

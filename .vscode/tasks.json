@@ -1,0 +1,51 @@
+{
+  // VS Code / Copilot Agent / Cursor 里可直接运行的任务，等价于终端里的 make 命令
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "status: 上下文全景",
+      "type": "shell",
+      "command": "./scripts/status.sh",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    },
+    {
+      "label": "check: 仓库验收",
+      "type": "shell",
+      "command": "./scripts/check.sh",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    },
+    {
+      "label": "test: 构建并跑专题测试",
+      "type": "shell",
+      "command": "make test DIR=${input:topicDir}",
+      "problemMatcher": ["$gcc"],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "group": { "kind": "test", "isDefault": true }
+    },
+    {
+      "label": "demo: 编译并运行当前 C++ 文件",
+      "type": "shell",
+      "command": "make demo FILE=${file}",
+      "problemMatcher": ["$gcc"],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "bootstrap: 工具链自检",
+      "type": "shell",
+      "command": "./scripts/bootstrap.sh",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "topicDir",
+      "type": "promptString",
+      "description": "专题目录（相对仓库根）",
+      "default": "algorithms/src/02-linked-list"
+    }
+  ]
+}

@@ -2,3 +2,5 @@
 build/
 .vscode/*
 .cache/
+!.vscode/tasks.json
+!.vscode/settings.json

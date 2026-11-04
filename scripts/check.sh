@@ -101,7 +101,9 @@ done
 
 # ---------------------------------------------------------------- 4. 操作层文件
 bold "4. 操作层文件"
-for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
+for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile .vscode/tasks.json \
+         CLAUDE.md .github/copilot-instructions.md .cursor/rules/workflow.mdc \
+         scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
   if [ -f "$f" ]; then ok "$f"; else bad "缺少 $f"; fi
 done
 if [ -f NEXT.md ]; then
