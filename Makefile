@@ -11,7 +11,7 @@ DIR ?= algorithms/src/02-linked-list
 GTEST_SRC := $(CURDIR)/algorithms/src/01-array-string/build/_deps/googletest-src
 GTEST_FLAG := $(if $(wildcard $(GTEST_SRC)/CMakeLists.txt),-DFETCHCONTENT_SOURCE_DIR_GOOGLETEST=$(GTEST_SRC),)
 
-.PHONY: help status check bootstrap test demo clean
+.PHONY: help status check bootstrap test demo clean plan plan-new
 
 help: ## 显示可用命令
 	@echo "dev_tool · 学习仓库统一入口"
@@ -20,12 +20,22 @@ help: ## 显示可用命令
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  make %-12s %s\n", $$1, $$2}'
 	@echo
 	@echo "示例:"
-	@echo "  make status"
+	@echo "  make status        # 上下文（含最新计划）"
+	@echo "  make plan          # 直接看今天的执行清单"
+	@echo "  make plan-new      # 生成明天的计划模板"
 	@echo "  make test DIR=algorithms/src/02-linked-list"
 	@echo "  make demo FILE=cpp/04-smart-pointers/src/mini_shared_ptr.cpp"
 
-status: ## 上下文全景（当前阶段 / 下一步 / 未提交改动）
+status: ## 上下文全景（当前阶段 / 计划 / 下一步 / 未提交改动）
 	@./scripts/status.sh
+
+plan: ## 查看最新一份每日计划（plans/YYYY-MM-DD.md）
+	@latest=$$(ls -1 plans/[0-9]*.md 2>/dev/null | sort | tail -1); \
+	if [ -z "$$latest" ]; then echo "plans/ 下暂无计划，先跑 make plan-new"; exit 1; fi; \
+	echo ">> $$latest"; echo; cat "$$latest"
+
+plan-new: ## 生成下一天的计划文件（模板）
+	@./scripts/new-plan.sh
 
 check: ## 仓库验收（卫生 / 死链 / 四件套矩阵 / 密钥）
 	@./scripts/check.sh

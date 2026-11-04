@@ -101,7 +101,7 @@ done
 
 # ---------------------------------------------------------------- 4. 操作层文件
 bold "4. 操作层文件"
-for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile .vscode/tasks.json \
+for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile plans/README.md .vscode/tasks.json \
          CLAUDE.md .github/copilot-instructions.md .cursor/rules/workflow.mdc \
          scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
   if [ -f "$f" ]; then ok "$f"; else bad "缺少 $f"; fi
@@ -109,6 +109,39 @@ done
 if [ -f NEXT.md ]; then
   n=$(grep -c '^- \[ \]' NEXT.md || true)
   [ "${n:-0}" -gt 3 ] && warn "NEXT.md 有 $n 条待办（规则：最多 3 条）" || ok "NEXT.md 待办数量合规（${n:-0}）"
+fi
+
+# ---------------------------------------------------------------- 4.5 每日计划
+bold "4.5 每日计划（plans/）"
+badnames=""
+for f in plans/*.md; do
+  [ -e "$f" ] || continue
+  b=$(basename "$f")
+  case "$b" in
+    README.md) continue ;;
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md) ;;
+    *) badnames="$badnames $b" ;;
+  esac
+done
+if [ -z "$badnames" ]; then
+  ok "命名规范（YYYY-MM-DD.md）"
+else
+  bad "以下文件名不符合 YYYY-MM-DD.md:$badnames"
+fi
+latest=$(ls -1 plans/[0-9]*.md 2>/dev/null | sort | tail -1)
+if [ -n "$latest" ]; then
+  d=$(basename "$latest" .md); t=$(date +%Y-%m-%d)
+  if [ "$d" \< "$t" ]; then
+    warn "最新计划是 $d，今天（$t）还没建 → make plan-new"
+  else
+    ok "最新计划: $latest"
+  fi
+  if ! grep -q '^- 做完了什么：.\+' "$latest"; then
+    dim_note="最新计划尚未填写复盘"
+    printf '  \033[33m!\033[0m %s\n' "$dim_note"
+  fi
+else
+  warn "plans/ 下暂无计划文件 → make plan-new"
 fi
 
 # ---------------------------------------------------------------- 5. 未跟踪文件

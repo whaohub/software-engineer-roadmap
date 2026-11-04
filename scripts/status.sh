@@ -19,6 +19,26 @@ grep -E '^\| (S0|[A-E]) ' PROGRESS.md 2>/dev/null | awk -F'|' '{for(i=2;i<=5;i++
   || dim "  (未找到 PROGRESS.md)"
 
 bold ""
+bold "═══ 计划（plans/ 最新一份）═══"
+latest_plan=$(ls -1 plans/[0-9]*.md 2>/dev/null | sort | tail -1)
+if [ -n "$latest_plan" ]; then
+  plan_date=$(basename "$latest_plan" .md)
+  today=$(date +%Y-%m-%d)
+  printf '  %s' "$latest_plan"
+  if [ "$plan_date" = "$today" ]; then
+    printf '  \033[32m(今天)\033[0m\n'
+  elif [ "$plan_date" \> "$today" ]; then
+    printf '  \033[36m(明天及以后)\033[0m\n'
+  else
+    printf '  \033[33m(已过期，今天还没建计划 → make plan-new)\033[0m\n'
+  fi
+  awk '/^## 1\. 现在做/{flag=1;next} flag&&/^## [0-9]\./{flag=0} flag' "$latest_plan" \
+    | sed '/^$/d' | head -12 | sed 's/^/  /'
+else
+  dim "  (plans/ 下暂无计划 → make plan-new)"
+fi
+
+bold ""
 bold "═══ 下一步（NEXT.md）═══"
 if [ -f NEXT.md ]; then
   # 打印 "现在做" 段落到下一个二级标题
@@ -44,6 +64,7 @@ tracked=$(git ls-files 2>/dev/null | grep -cE '(^|/)build/|CMakeCache\.txt' || t
 printf '  被跟踪的构建产物: %s\n' "${tracked:-0}"
 printf '  有内容的专题: %s\n' "$(grep -c '✅\|🚧' PROGRESS.md 2>/dev/null || echo '?')"
 printf '  未跟踪文件数: %s\n' "$(git ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')"
+printf '  计划文件数: %s\n' "$(ls -1 plans/[0-9]*.md 2>/dev/null | wc -l | tr -d ' ')"
 
 bold ""
 dim "提示: 完整检查用 ./scripts/check.sh；工具链自检用 ./scripts/bootstrap.sh"
