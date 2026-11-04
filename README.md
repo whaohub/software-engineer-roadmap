@@ -2,13 +2,42 @@
 
 C++ 面试题知识库，按主题分类，每题包含代码实现与关键要点。
 
+## 🚀 开始工作（新机器 / 新 agent / 新会话）
+
+```bash
+git clone <repo> && cd software-engineer-roadmap
+./scripts/bootstrap.sh     # 工具链自检（首次）
+./scripts/status.sh        # 一键拿到：当前阶段 / 下一步 / 未提交改动
+```
+
+然后**只读** `NEXT.md` 指向的文件，不要通读全仓。约定见 **[AGENTS.md](./AGENTS.md)**。
+
+| 文件 | 作用 |
+|---|---|
+| [AGENTS.md](./AGENTS.md) | 工作契约：铁律、会话协议、验收命令、提交规范（**任何 agent 都读这个**） |
+| [NEXT.md](./NEXT.md) | 唯一的「下一步」，每次开工/收工更新 |
+| [PROGRESS.md](./PROGRESS.md) | 阶段状态 + 会话日志（跨设备恢复上下文靠它 + `git log`） |
+| [PLAN.md](./PLAN.md) | 五阶段计划、四件套标准、AI 时代重点 |
+| `scripts/` | `status.sh` 上下文 / `check.sh` 验收 / `bootstrap.sh` 环境 |
+
+> 📌 **学习规划见 [PLAN.md](./PLAN.md)**（阶段划分、每周节奏、交付标准、AI 时代重点）
+> 现状：28 个专题中 4 个有实质内容（14%）—— 策略已改为**串行深挖，停止横向铺骨架**。
+
 ## 学习阶段
 
 ```
+第 0 层 工具链: git / CMake / gdb / perf            🚧 提前学（linux/08-build, 09-debug）
 第一阶段: C++ 语言层 (cpp/)           ✅ 进行中
 第二阶段: Linux 系统层 (linux/)       🚧 已规划
-第三阶段: 中间件 / 分布式             📋 待规划
+第三阶段: 中间件 (middleware/)         🚧 已建骨架
+第四阶段: 性能与确定性 (perf/)         📋 待建
+第五阶段: 作品与面试 (project/, interview/) 📋 待建
+可选延伸: 执行管理实践 (runtime/)      💡 想补作品再做
 ```
+
+> 范围：**AUTOSAR 规范不在学习范围**（EM 属于工作经验，转为案例整理，见 PLAN.md）。
+
+每个专题的完成标准是「四件套」：Q 文档 + 可运行 demo + 实测数据 + 自测卡（见 [PLAN.md](./PLAN.md#4-交付标准每个专题的四件套)）。
 
 ## C++ 专题
 
@@ -44,3 +73,12 @@ C++ 面试题知识库，按主题分类，每题包含代码实现与关键要�
 
 *C++ 阶段每道题一个 `.cpp` 文件，文件头包含题目、难度、标签和要点说明。*  
 *Linux 阶段每题一个 `Qxxx` 文档 + `src/` 代码示例。*
+
+---
+
+## 中间件专题（第四阶段）
+
+面向自动驾驶中间件：通信模型、共享内存零拷贝、序列化、DDS / SOME-IP、传输与时序。
+
+详见 [middleware/README.md](./middleware/README.md) —— 该阶段的核心交付物是 **mini-ipc**（共享内存 + 无锁队列 + 生命周期管理，含 p99 延迟数据）。
+

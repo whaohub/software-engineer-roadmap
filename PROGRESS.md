@@ -1,0 +1,23 @@
+# PROGRESS — 进度与会话日志
+
+> 每次收工在「会话日志」顶部追加一行（新的在最上面）。阶段状态在里程碑变化时更新。
+> 计划详情见 [PLAN.md](./PLAN.md)；下一步见 [NEXT.md](./NEXT.md)。
+
+## 阶段状态
+
+| 阶段 | 周次 | 主题 | 状态 | 产物 |
+|:--:|:--:|---|:--:|---|
+| S0 | W1 | 仓库整顿 + 标准定稿 | 🚧 进行中 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `scripts/` `interview/` `middleware/README.md` |
+| A | W2-W6 | C++ 深水区 | 📋 未开始 | - |
+| B | W7-W11 | Linux 系统层 | 📋 未开始 | - |
+| C | W12-W17 | 中间件 | 📋 未开始 | 目标：mini-ipc |
+| D | W18-W22 | 性能与确定性 | 📋 未开始 | 目标：性能分析报告 |
+| E | W23-W26 | 系统设计 + 面试冲刺 | 📋 未开始 | 目标：30 题 ✅ |
+
+## 会话日志
+
+| 日期 | 阶段 | 做了什么 | 产物 | 下一步 |
+|---|---|---|---|---|
+| 2026-11-04 | S0 | 建立跨设备/跨 agent 操作层：工作契约、下一步指针、进度日志、三个脚本 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `scripts/*.sh` | 跑通 linked-list 测试 |
+| 2026-11-04 | S0 | 面试题库 checklist（6 板块 39 题）；中间件层骨架；清理构建产物跟踪 | `interview/README.md` `middleware/README.md` | - |
+| 2026-11-02 | S0 | 学习规划定稿：五阶段（中间件 + 性能与确定性为主线，AUTOSAR 不在范围） | `PLAN.md` `README.md` | - |
