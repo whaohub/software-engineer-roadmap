@@ -86,8 +86,22 @@ bool hasCycle(ListNode *head) {
 //       环长)
 // 预期复杂度：时间 O(n) | 空间 O(1)
 ListNode *detectCycle(ListNode *head) {
-  (void)head;
-  // TODO: 实现
+  auto *slow = head;
+  auto *fast = head;
+
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+    if (fast == slow) {
+      auto *p = head;
+      while (p != slow) {
+        p = p->next;
+        slow = slow->next;
+      }
+      return p;
+    }
+  }
+
   return nullptr;
 }
 

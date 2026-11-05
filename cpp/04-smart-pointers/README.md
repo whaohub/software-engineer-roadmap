@@ -9,12 +9,7 @@ C++ 标准库智能指针：`unique_ptr`、`shared_ptr`、`weak_ptr` 的实现�
 |---|------|:----:|------|------|
 |   | （待添加） |      |      |      |
 
-## 编译运行
-
-```bash
-# g++ -std=c++17 -o <binary_name> <source_file>.cpp && ./<binary_name>
-```
-
+## shared_ptr 循环引用
 ## 参考
 - 《Effective Modern C++》Item 18-22
 - 《C++ Primer》第12章

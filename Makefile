@@ -49,9 +49,10 @@ test: ## 构建并跑某个专题的 gtest：DIR=...
 
 demo: ## 编译并运行单个 C++ 文件（C++17 + 告警全开）：FILE=...
 	@test -n "$(FILE)" || { echo "用法: make demo FILE=cpp/04-smart-pointers/src/xxx.cpp"; exit 1; }
-	@mkdir -p /tmp/roadmap-demo
-	@c++ -std=c++17 -Wall -Wextra -O0 -g "$(FILE)" -o /tmp/roadmap-demo/$(basename $(FILE) .cpp)
-	@/tmp/roadmap-demo/$(basename $(FILE) .cpp)
+	@set -e; out=/tmp/roadmap-demo/$$(basename "$(FILE)" .cpp); \
+	mkdir -p "$$(dirname "$$out")"; \
+	c++ -std=c++17 -Wall -Wextra -O0 -g "$(FILE)" -o "$$out"; \
+	"$$out"
 
 clean: ## 清理本地产物（build/ 与 demo 临时文件）
 	@find . -type d -name build -not -path "./third_party/*" -prune -exec rm -rf {} + 2>/dev/null || true
