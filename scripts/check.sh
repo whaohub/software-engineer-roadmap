@@ -73,7 +73,7 @@ fi
 # ---------------------------------------------------------------- 3. 专题完成度
 bold "3. 专题完成度矩阵（文档 / 源码 / 测试）"
 printf '  %-34s %-6s %-6s %-6s %s\n' "专题" "文档" "源码" "测试" "判定"
-for d in cpp/*/ linux/*/ middleware/*/ algorithms/src/*/; do
+for d in cpp/*/ linux/*/ middleware/*/ project/*/ algorithms/src/*/; do
   [ -d "$d" ] || continue
   case "$d" in
     */build/*|linux/apue/|linux/assembly/) continue ;;
@@ -101,7 +101,8 @@ done
 
 # ---------------------------------------------------------------- 4. 操作层文件
 bold "4. 操作层文件"
-for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile plans/README.md .vscode/tasks.json \
+for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile plans/README.md \
+         project/mini-pipeline/TASK.md project/mini-pipeline/README.md .vscode/tasks.json \
          CLAUDE.md .github/copilot-instructions.md .cursor/rules/workflow.mdc \
          scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
   if [ -f "$f" ]; then ok "$f"; else bad "缺少 $f"; fi

@@ -23,6 +23,7 @@
 
 ## 2. 排队（按顺序取）
 
+- **[project/mini-pipeline](./project/mini-pipeline/TASK.md) M1**：池 + 句柄让 11 个用例转绿（项目驱动主线，优先于其它 cpp 练习）
 - `algorithms/src/02-linked-list`：剩余 23 个未实现函数（03:5 / 04:7 / 05:11），周末整块时间处理 `05_design`
 - `cpp/04-smart-pointers`：手写 shared_ptr 控制块（40 分钟连续时间）→ `docs/Q001_sharedptr控制块.md`
 - `cpp/06-concurrency`：`memory_order` 六种语义实验 + false sharing 微基准
