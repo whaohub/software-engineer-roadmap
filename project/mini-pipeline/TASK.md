@@ -5,6 +5,9 @@
 > 「中间件数据通路 + 执行管理」：一块内存池 → 一个引用计数句柄 → 一条带背压的通道 →
 > 一组可取消的处理阶段 → 一个能优雅关闭的运行时。
 >
+> **需求规格（做什么/怎么算通过）**：[REQUIREMENTS.md](./REQUIREMENTS.md) —— 16 条功能需求 + 6 条非功能指标。
+> **它是不是玩具**：不是。冷启动对照表见 REQUIREMENTS.md §2（iceoryx / DPDK / Disruptor / Cyber RT / ROS 2 intra-process / AUTOSAR AP EM / systemd / K8s）。
+>
 > **学习方式**：每个里程碑都**内置了必然会踩的坑**（内存序、双释放、false sharing、ODR、关闭死锁）。
 > 不是先学再写，而是**先写 → 踩坑 → 用工具定位 → 修 → 留下数据**。
 
@@ -23,6 +26,8 @@
 > 每条都需要交付"**四件套**"：代码 + 测试 + **数据** + 一篇问题复盘文档（现象→工具→根因→修复→前后对比）。
 
 ## 2. 总目标（毕业标准）
+
+> 指标编号与测量方法以 [REQUIREMENTS.md](./REQUIREMENTS.md) §5 为准（N1-N6）：Debug 构建的数字不采信。
 
 1. `make test DIR=project/mini-pipeline` 全绿，且 `-fsanitize=address,undefined` 与 `=thread` 各跑一遍干净
 2. 一条 3 阶段流水线：`读入 → 处理 → 输出`，处理 100 万条 1KB 消息，**端到端 p99 延迟与吞吐有数字**
@@ -83,7 +88,7 @@ make test-tsan DIR=project/mini-pipeline            # TSan 无 data race
 
 ### 起步：测试已写好（现在是红的）
 
-`tests/buffer_pool_test.cpp` 共 11 个用例，覆盖：
+`tests/buffer_pool_test.cpp` 共 12 个用例，覆盖：
 句柄大小 ≤16 / acquire 计数 / copy-move 语义 / 归还后 `use_count==0` /
 池耗尽语义 / 单线程 1e6 次无泄漏 / 8 线程压测 / 块数据不串味 / 对齐检查 / 空句柄安全 / 统计峰值。
 

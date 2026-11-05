@@ -102,7 +102,8 @@ done
 # ---------------------------------------------------------------- 4. 操作层文件
 bold "4. 操作层文件"
 for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile plans/README.md \
-         project/mini-pipeline/TASK.md project/mini-pipeline/README.md .vscode/tasks.json \
+         project/mini-pipeline/REQUIREMENTS.md project/mini-pipeline/TASK.md \
+         project/mini-pipeline/README.md project/mini-pipeline/docs/ADR.md .vscode/tasks.json \
          CLAUDE.md .github/copilot-instructions.md .cursor/rules/workflow.mdc \
          scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
   if [ -f "$f" ]; then ok "$f"; else bad "缺少 $f"; fi
