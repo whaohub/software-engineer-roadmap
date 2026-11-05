@@ -7,8 +7,8 @@
 
 | 阶段 | 周次 | 主题 | 状态 | 产物 |
 |:--:|:--:|---|:--:|---|
-| S0 | W1 | 仓库整顿 + 标准定稿 | 🚧 进行中 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `scripts/` `interview/` `middleware/README.md` |
-| A | W2-W6 | C++ 深水区 | 📋 未开始 | - |
+| S0 | W1 | 仓库整顿 + 标准定稿 | ✅ 完成 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `Makefile` `scripts/` `plans/` `interview/` `middleware/README.md` |
+| A | W2-W6 | C++ 深水区 | 🚧 开始（cpp/04 demo 半成品） | `cpp/04-smart-pointers/src/mini_shared_ptr.cpp` |
 | B | W7-W11 | Linux 系统层 | 📋 未开始 | - |
 | C | W12-W17 | 中间件 | 📋 未开始 | 目标：mini-ipc |
 | D | W18-W22 | 性能与确定性 | 📋 未开始 | 目标：性能分析报告 |
@@ -18,6 +18,8 @@
 
 | 日期 | 阶段 | 做了什么 | 产物 | 下一步 |
 |---|---|---|---|---|
+| 2026-11-05 | A | `detectCycle`（Floyd）实现 → `two_pointers_test` 转绿；`cpp/04` 循环引用 demo（weak 版）可运行 | `02_two_pointers.cpp` `cpp/04/src/mini_shared_ptr.cpp` `3581abc` | demo 补三组对照 + `reverse_test` 转绿 |
+| 2026-11-05 | S0 | 每日计划系统（`plans/`、`make plan`、`new-plan.sh`）与 IDE 入口 | `plans/` `Makefile` `scripts/new-plan.sh` `7fd3c87` | - |
 | 2026-11-04 | S0 | 建立跨设备/跨 agent 操作层：工作契约、下一步指针、进度日志、三个脚本 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `scripts/*.sh` | 跑通 linked-list 测试 |
 | 2026-11-04 | S0 | 面试题库 checklist（6 板块 39 题）；中间件层骨架；清理构建产物跟踪 | `interview/README.md` `middleware/README.md` | - |
 | 2026-11-02 | S0 | 学习规划定稿：五阶段（中间件 + 性能与确定性为主线，AUTOSAR 不在范围） | `PLAN.md` `README.md` | - |
