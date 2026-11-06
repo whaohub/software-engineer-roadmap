@@ -22,6 +22,7 @@
 // ============================================================
 
 #include "list_utils.h"
+#include <cstddef>
 
 // ============================================================
 // 整条反转
@@ -36,9 +37,16 @@
 //                 head->next->next = head，head->next = nullptr，返回 newHead
 // 预期复杂度：迭代 时间 O(n) / 空间 O(1)；递归 时间 O(n) / 空间 O(n)（调用栈）
 ListNode *reverseList(ListNode *head) {
-  (void)head;
-  // TODO: 实现（迭代）
-  return nullptr;
+
+  ListNode *prev = nullptr;
+  ListNode *cur = head;
+  while (cur != nullptr) {
+    ListNode *next = cur->next;
+    cur->next = prev;
+    prev = cur;
+    cur = next;
+  }
+  return prev;
 }
 
 // 递归版本 —— 与上面同一题，仅实现方式不同
@@ -67,11 +75,23 @@ ListNode *reverseListRecursive(ListNode *head) {
 // 预期复杂度：时间 O(n) | 空间 O(1)
 // 易错：定位走 left - 1 步（走到左边界的前驱）；头插全程 cur 自身不动
 ListNode *reverseBetween(ListNode *head, int left, int right) {
-  (void)head;
-  (void)left;
-  (void)right;
-  // TODO: 实现
-  return nullptr;
+  ListNode dummy(0);
+  dummy.next = head;
+
+  ListNode *prev = &dummy;
+  for (int i = 1; i < left; ++i) {
+    prev = prev->next;
+  }
+
+  ListNode *cur = prev->next;
+  for (int j = 0; j < right - left; ++j) {
+    ListNode *moved = cur->next;
+    cur->next = moved->next;
+    moved->next = prev->next;
+    prev->next = moved;
+  }
+
+  return dummy.next;
 }
 
 // [M] LC 24 — 两两交换链表中的节点 🟠
