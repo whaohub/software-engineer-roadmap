@@ -7,6 +7,11 @@
 - 设计决策记录（池耗尽语义等 3 个必须你定的取舍）：**[docs/ADR.md](./docs/ADR.md)**
 - 当前进度：**M1 · 句柄与内存池**（测试已写好，实现全是桩）
 
+## 先做这一步（2 小时）
+
+做 [docs/PREREQ.md](./docs/PREREQ.md) 的 5 题准入自测再动手 ——
+4-5 分直接开工 M1；3 分补 2 小时；0-2 分补 5 小时（只补缺的，不做全景复习）。
+
 ## 快速开始
 
 ```bash
@@ -14,6 +19,7 @@
 make test DIR=project/mini-pipeline        # 单测（当前 12 个用例中大部分是红的）
 make test-asan DIR=project/mini-pipeline   # ASan + UBSan
 make test-tsan DIR=project/mini-pipeline   # TSan（数据竞争）
+make probe DIR=project/mini-pipeline       # Linux 侧验收（需 Linux/容器，mac 会给 docker 命令）
 
 # 或者直接 cmake
 cmake -S project/mini-pipeline -B project/mini-pipeline/build \
@@ -29,6 +35,9 @@ project/mini-pipeline/
 ├── REQUIREMENTS.md               需求规格（功能/非功能/工业界对照）
 ├── TASK.md                       任务书（5 个里程碑 + 内置的坑）
 ├── docs/ADR.md                   设计决策记录（你来做取舍）
+├── docs/PREREQ.md                准入自测（C++ 门槛：决定先补基础还是直接开工）
+├── docs/LINUX-PREREQ.md          Linux 前置：需要什么、用哪条命令验证
+├── scripts/linux-probe.sh        M1 的 Linux 侧验收（RSS / syscall / page-fault）
 ├── CMakeLists.txt
 ├── include/mini_pipeline/        对外头文件（接口契约）
 ├── src/                          实现（M1 目前是桩）
@@ -42,4 +51,5 @@ project/mini-pipeline/
 - [ ] ASan/UBSan 干净（无 double free、无 use-after-free）
 - [ ] TSan 干净（引用计数与 free list 无线程竞争）
 - [ ] 8 线程 × 2 万次 acquire/release 后 `stats().in_use == 0`
+- [ ] `make probe` 通过（最大 RSS 达标、热路径无 brk/mmap）
 - [ ] `docs/M1-句柄与内存池.md`：记录你踩的坑（现象 → 工具输出 → 根因 → 修复 → 数据）

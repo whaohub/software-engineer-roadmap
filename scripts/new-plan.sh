@@ -5,24 +5,23 @@ set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 1
 
 # 默认日期：已有计划则取「最新计划的次日」，否则取明天
+# 注意：BSD(macOS) date 的 -v 必须写在 -f 之前，否则输出格式失效（返回本地化日期串）
+_is_date() { case "$1" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) return 0 ;; *) return 1 ;; esac; }
+
 next_day() { # $1=YYYY-MM-DD
-  if date -j -f "%Y-%m-%d" "$1" -v+1d +%Y-%m-%d >/dev/null 2>&1; then
-    date -j -f "%Y-%m-%d" "$1" -v+1d +%Y-%m-%d
-  else
-    date -d "$1 +1 day" +%Y-%m-%d
-  fi
+  local base="$1" out=""
+  out=$(date -j -v+1d -f "%Y-%m-%d" "$base" +%Y-%m-%d 2>/dev/null)
+  _is_date "$out" && { printf '%s' "$out"; return 0; }
+  out=$(date -d "$base +1 day" +%Y-%m-%d 2>/dev/null)
+  _is_date "$out" && { printf '%s' "$out"; return 0; }
+  return 1
 }
 
 target="${1:-}"
 if [ -z "$target" ]; then
-  latest=$(ls -1 plans/*.md 2>/dev/null | grep -E '/[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$' | sort | tail -1)
-  if [ -n "$latest" ]; then
-    target=$(next_day "$(basename "$latest" .md)")
-  elif date -v+1d +%Y-%m-%d >/dev/null 2>&1; then
-    target=$(date -v+1d +%Y-%m-%d)
-  else
-    target=$(date -d "+1 day" +%Y-%m-%d)
-  fi
+  # 默认 = 明天（可预测）；需要其它日期就显式传参 ./scripts/new-plan.sh 2026-12-01
+  target=$(date -j -v+1d +%Y-%m-%d 2>/dev/null)
+  _is_date "$target" || target=$(date -d "+1 day" +%Y-%m-%d 2>/dev/null)
 fi
 
 case "$target" in
@@ -39,7 +38,9 @@ fi
 mkdir -p plans
 file="plans/${target}.md"
 if [ -f "$file" ]; then
-  echo "已存在: $file"
+  latest=$(ls -1 plans/*.md 2>/dev/null | grep -E '/[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$' | sort | tail -1)
+  echo "已存在: ${file}（不覆盖）"
+  [ -n "$latest" ] && [ "$latest" != "$file" ] && echo "最新一份是: $latest"
   echo "编辑: \${EDITOR:-vim} $file"
   exit 0
 fi

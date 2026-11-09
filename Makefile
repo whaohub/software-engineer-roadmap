@@ -11,7 +11,7 @@ DIR ?= algorithms/src/02-linked-list
 GTEST_SRC := $(CURDIR)/algorithms/src/01-array-string/build/_deps/googletest-src
 GTEST_FLAG := $(if $(wildcard $(GTEST_SRC)/CMakeLists.txt),-DFETCHCONTENT_SOURCE_DIR_GOOGLETEST=$(GTEST_SRC),)
 
-.PHONY: help status check bootstrap test test-asan test-tsan demo clean plan plan-new
+.PHONY: help status check bootstrap test test-asan test-tsan probe demo clean plan plan-new
 
 help: ## 显示可用命令
 	@echo "dev_tool · 学习仓库统一入口"
@@ -27,6 +27,7 @@ help: ## 显示可用命令
 	@echo "  make test DIR=project/mini-pipeline       # 实战项目 M1"
 	@echo "  make test-asan DIR=project/mini-pipeline  # 内存/UB 检查"
 	@echo "  make test-tsan DIR=project/mini-pipeline  # 数据竞争检查"
+	@echo "  make probe DIR=project/mini-pipeline      # Linux 侧验收（STRACE/PERF）"
 	@echo "  make demo FILE=cpp/04-smart-pointers/src/mini_shared_ptr.cpp"
 
 status: ## 上下文全景（当前阶段 / 计划 / 下一步 / 未提交改动）
@@ -57,6 +58,9 @@ test-asan: ## ASan+UBSan 跑专题测试：DIR=...
 test-tsan: ## TSan 跑专题测试（查数据竞争）：DIR=...
 	@cd $(DIR) && cmake -S . -B build-tsan -DMP_SANITIZE=thread $(GTEST_FLAG) >/dev/null \
 	  && cmake --build build-tsan -j8 && cd build-tsan && ctest --output-on-failure
+
+probe: ## Linux 侧验收（RSS / syscall / page-fault / cache）：DIR=project/mini-pipeline
+	@./$(DIR)/scripts/linux-probe.sh $(DIR)/build/buffer_pool_test
 
 demo: ## 编译并运行单个 C++ 文件（C++17 + 告警全开）：FILE=...
 	@test -n "$(FILE)" || { echo "用法: make demo FILE=cpp/04-smart-pointers/src/xxx.cpp"; exit 1; }

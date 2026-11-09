@@ -84,6 +84,7 @@ BufferPool& global_pool();                 // 单例，M5 讨论静态初始化�
 make test DIR=project/mini-pipeline                 # 单测全绿
 make test-asan DIR=project/mini-pipeline            # ASan+UBSan 干净
 make test-tsan DIR=project/mini-pipeline            # TSan 无 data race
+make probe DIR=project/mini-pipeline                # Linux 侧：RSS / brk-mmap / page-fault（见 docs/LINUX-PREREQ.md）
 ```
 
 ### 起步：测试已写好（现在是红的）

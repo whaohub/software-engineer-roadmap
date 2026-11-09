@@ -39,6 +39,17 @@ else
   ok "密钥文件未入库"
 fi
 
+# bash 3.2 陷阱：$var 紧跟中文会被当成变量名的一部分（set -u 下直接崩溃）
+if grep -nE '\$[A-Za-z_][A-Za-z0-9_]*[^\x00-\x7f]' scripts/*.sh >/dev/null 2>&1; then
+  if LC_ALL=C grep -nE '\$[A-Za-z_][A-Za-z0-9_]*[^\x00-\x7f]' scripts/*.sh >/dev/null 2>&1; then
+    bad "脚本里有 \$var 紧跟中文（中文紧跟变量名会被 bash 当成变量名）"
+  else
+    ok "脚本中的变量展开写法规避了 bash 3.2 中文陷阱"
+  fi
+else
+  ok "脚本中的变量展开写法规避了 bash 3.2 中文陷阱"
+fi
+
 # ---------------------------------------------------------------- 2. Markdown 内链
 bold "2. Markdown 内链"
 if ! command -v python3 >/dev/null 2>&1; then
@@ -103,7 +114,9 @@ done
 bold "4. 操作层文件"
 for f in AGENTS.md NEXT.md PROGRESS.md PLAN.md README.md Makefile plans/README.md \
          project/mini-pipeline/REQUIREMENTS.md project/mini-pipeline/TASK.md \
-         project/mini-pipeline/README.md project/mini-pipeline/docs/ADR.md .vscode/tasks.json \
+         project/mini-pipeline/README.md project/mini-pipeline/docs/ADR.md \
+         project/mini-pipeline/docs/PREREQ.md project/mini-pipeline/docs/LINUX-PREREQ.md \
+         project/mini-pipeline/scripts/linux-probe.sh .vscode/tasks.json \
          CLAUDE.md .github/copilot-instructions.md .cursor/rules/workflow.mdc \
          scripts/status.sh scripts/check.sh scripts/bootstrap.sh; do
   if [ -f "$f" ]; then ok "$f"; else bad "缺少 $f"; fi
@@ -134,7 +147,7 @@ latest=$(ls -1 plans/[0-9]*.md 2>/dev/null | sort | tail -1)
 if [ -n "$latest" ]; then
   d=$(basename "$latest" .md); t=$(date +%Y-%m-%d)
   if [ "$d" \< "$t" ]; then
-    warn "最新计划是 $d，今天（$t）还没建 → make plan-new"
+    warn "最新计划是 ${d}，今天（${t}）还没建 → make plan-new"
   else
     ok "最新计划: $latest"
   fi
