@@ -109,9 +109,20 @@ ListNode *reverseBetween(ListNode *head, int left, int right) {
 // 易错：循环条件 prev->next && prev->next->next
 // 缺一不可（奇数个结点时最后一轮不换）
 ListNode *swapPairs(ListNode *head) {
-  (void)head;
-  // TODO: 实现
-  return nullptr;
+  ListNode dummy(0);
+  dummy.next = head;
+  ListNode *prev = &dummy;
+
+  while (prev->next && prev->next->next) {
+    ListNode *first = prev->next;
+    ListNode *second = prev->next->next;
+
+    first->next = second->next;
+    second->next = first;
+    prev->next = second;
+    prev = first;
+  }
+  return dummy.next;
 }
 
 // ============================================================
@@ -127,7 +138,27 @@ ListNode *swapPairs(ListNode *head) {
 // 易错：① 奇数长度时前半段比后半段多一个结点，循环只需走完后半段
 //       ② 生产代码里比较结束后应把后半段再反转回去，保持调用方链表结构不变
 bool isPalindrome(ListNode *head) {
-  (void)head;
-  // TODO: 实现
-  return false;
+  ListNode *slow = head;
+  ListNode *fast = head;
+  while (fast->next && fast->next->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+
+  auto half = reverseList(slow->next);
+
+  ListNode *a = head;
+  ListNode *b = half;
+  bool result = true;
+  while (b) {
+    if (a->val != b->val) {
+      result = false;
+      break;
+    }
+    a = a->next;
+    b = b->next;
+  }
+  slow->next = reverseList(half);
+
+  return result;
 }

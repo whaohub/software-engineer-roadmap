@@ -309,13 +309,13 @@ TEST(SwapPairsTest, OddLengthFive) {
 }
 
 TEST(SwapPairsTest, NodesSwappedNotValues) {
-  // 题目要求实际交换结点：原第 1 个结点的 next 应指向原第 3 个结点
+  // 题目要求实际交换结点：原第 1 个结点的 next 应指向原第 4 个结点
   ListPtr in(list_utils::buildList({1, 2, 3, 4}));
   ListNode *first = list_utils::nodeAt(in.get(), 0);
-  ListNode *third = list_utils::nodeAt(in.get(), 2);
+  ListNode *fourth = list_utils::nodeAt(in.get(), 3);
   ListPtr out(swapPairs(in.release()));
   EXPECT_EQ(out.get()->val, 2);       // 新头是原第 2 个结点
-  EXPECT_EQ(first->next, third);      // 原第 1 个结点现在指向原第 3 个结点
+  EXPECT_EQ(first->next, fourth);      // 原第 1 个结点现在指向原第 4 个结点
 }
 
 // ------------------------------------------------------------
