@@ -66,7 +66,7 @@ demo: ## 编译并运行单个 C++ 文件（C++17 + 告警全开）：FILE=...
 	@test -n "$(FILE)" || { echo "用法: make demo FILE=cpp/04-smart-pointers/src/xxx.cpp"; exit 1; }
 	@set -e; out=/tmp/roadmap-demo/$$(basename "$(FILE)" .cpp); \
 	mkdir -p "$$(dirname "$$out")"; \
-	c++ -std=c++17 -Wall -Wextra -O0 -g "$(FILE)" -o "$$out"; \
+	c++ -std=c++17 -Wall -Wextra -O0 -g -pthread "$(FILE)" -o "$$out"; \
 	"$$out"
 
 clean: ## 清理本地产物（build/ 与 demo 临时文件）
