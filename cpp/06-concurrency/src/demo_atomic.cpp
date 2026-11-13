@@ -1,7 +1,7 @@
 #include <atomic>
 #include <iostream>
 #include <ostream>
-#include <thread>
+#include "thread_utils.h"
 
 std::atomic<int> count;
 // atomic basic
@@ -14,11 +14,9 @@ void worker() {
 }
 
 void basic_atomic() {
-  std::thread t1(worker);
-  std::thread t2(worker);
+  Thread t1(worker);
+  Thread t2(worker);
 
-  t1.join();
-  t2.join();
   std::cout << "count : " << count << std::endl;
 }
 
@@ -42,11 +40,8 @@ void consumer() {
 }
 
 void order_relaxed() {
-  std::thread t1(producer);
-  std::thread t2(consumer);
-
-  t1.join();
-  t2.join();
+  Thread t1(producer);
+  Thread t2(consumer);
 }
 
 std::atomic<int> x{0};
@@ -72,11 +67,8 @@ void threadB() {
 }
 
 void store_buffing() {
-  std::thread t1(threadA);
-  std::thread t2(threadB);
-
-  t1.join();
-  t2.join();
+  Thread t1(threadA);
+  Thread t2(threadB);
 }
 
 int main() {
