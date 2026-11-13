@@ -23,17 +23,17 @@ make status                # 一键拿到：当前阶段 / 下一步 / 未提交
 | `.vscode/tasks.json` | VS Code 任务面板（已入库，换机器也在） |
 
 > 📌 **学习规划见 [PLAN.md](./PLAN.md)**（阶段划分、每周节奏、交付标准、AI 时代重点）
-> 现状：28 个专题中 4 个有实质内容（14%）—— 策略已改为**串行深挖，停止横向铺骨架**。
+> 现状：专题骨架停止扩张；当前只推进 `project/mini-pipeline` M1（六个单元），见 [NEXT.md](./NEXT.md)。
 
 ## 学习阶段
 
 ```
 第 0 层 工具链: git / CMake / gdb / perf            🚧 提前学（linux/08-build, 09-debug）
-第一阶段: C++ 语言层 (cpp/)           ✅ 进行中
+第一阶段: C++ 语言层 (cpp/)           🚧 进行中
 第二阶段: Linux 系统层 (linux/)       🚧 已规划
 第三阶段: 中间件 (middleware/)         🚧 已建骨架
 第四阶段: 性能与确定性 (perf/)         📋 待建
-第五阶段: 作品与面试 (project/, interview/) 📋 待建
+第五阶段: 作品与面试 (project/, interview/) 🚧 进行中（mini-pipeline / 39 题 checklist）
 可选延伸: 执行管理实践 (runtime/)      💡 想补作品再做
 ```
 
