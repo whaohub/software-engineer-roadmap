@@ -52,7 +52,7 @@
 
 ## 5. 阻塞 / 待决策
 
-- 暂无（`cpp/06-concurrency` 已收尾，`448eb5b`）
+- `cpp/06-concurrency` 有未提交改动（RAII `Thread` 包装 + atomic demo），按今日 Block A 先收尾再开工
 
 ## 6. 会话历史
 
