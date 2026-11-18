@@ -47,16 +47,19 @@ Buffer::~Buffer() {
 }
 
 std::byte *Buffer::data() const noexcept {
-  return nullptr; // TODO(M1)
+  if (pool_)
+    return pool_->memory_ + index_ * pool_->block_size_;
+  return nullptr;
 }
-std::size_t Buffer::size() const noexcept {
-  return 0; // TODO(M1)
-}
+std::size_t Buffer::size() const noexcept { return pool_->block_size_; }
 std::uint32_t Buffer::use_count() const noexcept {
   return 0; // TODO(M1)
 }
 void Buffer::reset() noexcept {
-  // TODO(M1): 与析构同样的释放逻辑（可复用）
+  if (pool_) {
+    pool_->release(index_);
+    pool_ = nullptr;
+  }
 }
 Buffer::operator bool() const noexcept { return pool_ != nullptr; }
 Buffer::Buffer(BufferPool *pool, std::uint32_t index)
@@ -77,7 +80,6 @@ BufferPool::BufferPool(std::size_t block_size, std::uint32_t block_count)
   }
 }
 BufferPool::~BufferPool() {
-  // TODO(M1): 释放底层内存（先确认没有在途句柄，或接受泄漏并断言）
   if (memory_)
     delete[] memory_;
 }

@@ -73,7 +73,6 @@ private:
   friend class Buffer;
   void release(std::uint32_t index) noexcept;
 
-  // TODO(M1): 底层内存、free list、原子计数、统计
   std::byte *memory_;
   std::vector<std::uint32_t> free_idx_;
 
