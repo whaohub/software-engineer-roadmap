@@ -7,33 +7,38 @@
 //   3. 把计数改成原子、加多线程压测（ConcurrentStress，TSan 会挑毛病）
 //   4. 句柄压到 <=16 字节（HandleSize），并保证 data() 对齐（Alignment）
 #include "mini_pipeline/buffer_pool.hpp"
+#include <cstddef>
 
 namespace mp {
 
 // ============================ Buffer ============================
 
 Buffer::Buffer() noexcept = default;
-Buffer::Buffer(const Buffer& other) noexcept : pool_or_block_(other.pool_or_block_), index_(other.index_) {
+Buffer::Buffer(const Buffer &other) noexcept
+    : pool_(other.pool_), index_(other.index_) {
   // TODO(M1): 引用计数 +1（线程安全）
 }
-Buffer& Buffer::operator=(const Buffer& other) noexcept {
-  if (this == &other) return *this;
+Buffer &Buffer::operator=(const Buffer &other) noexcept {
+  if (this == &other)
+    return *this;
   // TODO(M1): 先释放自己持有的块，再接管 other 的块并 +1
-  pool_or_block_ = other.pool_or_block_;
+  pool_ = other.pool_;
   index_ = other.index_;
   return *this;
 }
-Buffer::Buffer(Buffer&& other) noexcept : pool_or_block_(other.pool_or_block_), index_(other.index_) {
+Buffer::Buffer(Buffer &&other) noexcept
+    : pool_(other.pool_), index_(other.index_) {
   // TODO(M1): 转移所有权，把 other 置空（不改变引用计数）
-  other.pool_or_block_ = nullptr;
+  other.pool_ = nullptr;
   other.index_ = 0;
 }
-Buffer& Buffer::operator=(Buffer&& other) noexcept {
-  if (this == &other) return *this;
+Buffer &Buffer::operator=(Buffer &&other) noexcept {
+  if (this == &other)
+    return *this;
   // TODO(M1): 释放自己 -> 接管 other -> other 置空
-  pool_or_block_ = other.pool_or_block_;
+  pool_ = other.pool_;
   index_ = other.index_;
-  other.pool_or_block_ = nullptr;
+  other.pool_ = nullptr;
   other.index_ = 0;
   return *this;
 }
@@ -41,19 +46,21 @@ Buffer::~Buffer() {
   // TODO(M1): 引用计数 -1，减到 0 时归还块
 }
 
-std::byte* Buffer::data() const noexcept {
-  return nullptr;  // TODO(M1)
+std::byte *Buffer::data() const noexcept {
+  return nullptr; // TODO(M1)
 }
 std::size_t Buffer::size() const noexcept {
-  return 0;  // TODO(M1)
+  return 0; // TODO(M1)
 }
 std::uint32_t Buffer::use_count() const noexcept {
-  return 0;  // TODO(M1)
+  return 0; // TODO(M1)
 }
 void Buffer::reset() noexcept {
   // TODO(M1): 与析构同样的释放逻辑（可复用）
 }
-Buffer::operator bool() const noexcept { return pool_or_block_ != nullptr; }
+Buffer::operator bool() const noexcept { return pool_ != nullptr; }
+Buffer::Buffer(BufferPool *pool, std::uint32_t index)
+    : pool_(pool), index_(index) {}
 
 // ========================== BufferPool ==========================
 
@@ -62,32 +69,43 @@ BufferPool::BufferPool(std::size_t block_size, std::uint32_t block_count)
   // TODO(M1): 一次性分配 block_size_ * block_count_ 的连续内存
   //   注意对齐：块起始地址要满足 alignof(std::max_align_t)
   //   注意 free list 用「索引」而不是「指针」，避免内存移动后失效
+  memory_ = new std::byte[block_size_ * block_count_];
+  stats_ = {0, 0, block_count};
+  free_idx_.reserve(block_count_);
+  for (std::uint32_t i = 0; i < block_count_; ++i) {
+    free_idx_.push_back(i);
+  }
 }
 BufferPool::~BufferPool() {
   // TODO(M1): 释放底层内存（先确认没有在途句柄，或接受泄漏并断言）
+  if (memory_)
+    delete[] memory_;
 }
 
 Buffer BufferPool::acquire() {
-  // TODO(M1): 从 free list 弹出一块 -> 初始化控制块/清零 -> 返回句柄
+  if (!free_idx_.empty()) {
+    auto idx = free_idx_.back();
+    free_idx_.pop_back();
+    stats_.in_use++;
+    stats_.peak = std::max(stats_.capacity, stats_.in_use);
+    return Buffer{this, idx};
+  }
   return Buffer{};
 }
 
 void BufferPool::release(std::uint32_t index) noexcept {
-  // TODO(M1): 把块索引压回 free list（多线程下要保证结构不被破坏）
-  (void)index;
+  free_idx_.push_back(index);
+  stats_.in_use--;
 }
 
 std::size_t BufferPool::block_size() const noexcept { return block_size_; }
 std::uint32_t BufferPool::capacity() const noexcept { return block_count_; }
-BufferPool::Stats BufferPool::stats() const noexcept {
-  // TODO(M1): 返回真实统计（in_use / peak / capacity）
-  return Stats{0, 0, block_count_};
-}
+BufferPool::Stats BufferPool::stats() const noexcept { return stats_; }
 
-BufferPool& global_pool() {
+BufferPool &global_pool() {
   // TODO(M1): 返回进程级单例（M5 讨论静态初始化/析构顺序）
   static BufferPool pool(1024, 256);
   return pool;
 }
 
-}  // namespace mp
+} // namespace mp
