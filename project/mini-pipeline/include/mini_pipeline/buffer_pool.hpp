@@ -74,6 +74,7 @@ private:
   void release(std::uint32_t index) noexcept;
 
   std::byte *memory_;
+  std::uint32_t *ref_counts_;
   std::vector<std::uint32_t> free_idx_;
 
   Stats stats_{};

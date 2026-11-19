@@ -16,19 +16,29 @@ namespace mp {
 Buffer::Buffer() noexcept = default;
 Buffer::Buffer(const Buffer &other) noexcept
     : pool_(other.pool_), index_(other.index_) {
-  // TODO(M1): 引用计数 +1（线程安全）
+  if (other.pool_)
+    pool_->ref_counts_[index_]++;
 }
 Buffer &Buffer::operator=(const Buffer &other) noexcept {
   if (this == &other)
     return *this;
-  // TODO(M1): 先释放自己持有的块，再接管 other 的块并 +1
-  pool_ = other.pool_;
-  index_ = other.index_;
+
+  if (pool_ && --pool_->ref_counts_[index_] == 0) {
+    pool_->release(index_);
+    pool_ = nullptr;
+    index_ = 0;
+  }
+
+  if (other.pool_) {
+    pool_ = other.pool_;
+    index_ = other.index_;
+    pool_->ref_counts_[index_]++;
+  }
+
   return *this;
 }
 Buffer::Buffer(Buffer &&other) noexcept
     : pool_(other.pool_), index_(other.index_) {
-  // TODO(M1): 转移所有权，把 other 置空（不改变引用计数）
   other.pool_ = nullptr;
   other.index_ = 0;
 }
@@ -36,14 +46,25 @@ Buffer &Buffer::operator=(Buffer &&other) noexcept {
   if (this == &other)
     return *this;
   // TODO(M1): 释放自己 -> 接管 other -> other 置空
-  pool_ = other.pool_;
-  index_ = other.index_;
-  other.pool_ = nullptr;
-  other.index_ = 0;
+  if (pool_ && --pool_->ref_counts_[index_] == 0) {
+    pool_->release(index_);
+    pool_ = nullptr;
+    index_ = 0;
+  }
+
+  if (other.pool_) {
+    pool_ = other.pool_;
+    index_ = other.index_;
+    other.pool_ = nullptr;
+    other.index_ = 0;
+  }
   return *this;
 }
 Buffer::~Buffer() {
   // TODO(M1): 引用计数 -1，减到 0 时归还块
+  if (pool_ && (--pool_->ref_counts_[index_] == 0)) {
+    pool_->release(index_);
+  }
 }
 
 std::byte *Buffer::data() const noexcept {
@@ -51,19 +72,27 @@ std::byte *Buffer::data() const noexcept {
     return pool_->memory_ + index_ * pool_->block_size_;
   return nullptr;
 }
-std::size_t Buffer::size() const noexcept { return pool_->block_size_; }
+std::size_t Buffer::size() const noexcept {
+  return pool_ ? pool_->block_size_ : 0;
+}
 std::uint32_t Buffer::use_count() const noexcept {
-  return 0; // TODO(M1)
+
+  return pool_ ? pool_->ref_counts_[index_] : 0;
 }
 void Buffer::reset() noexcept {
   if (pool_) {
-    pool_->release(index_);
+    if (--pool_->ref_counts_[index_] == 0) {
+      pool_->release(index_);
+    }
     pool_ = nullptr;
+    index_ = 0;
   }
 }
 Buffer::operator bool() const noexcept { return pool_ != nullptr; }
 Buffer::Buffer(BufferPool *pool, std::uint32_t index)
-    : pool_(pool), index_(index) {}
+    : pool_(pool), index_(index) {
+  pool_->ref_counts_[index_]++;
+}
 
 // ========================== BufferPool ==========================
 
@@ -73,6 +102,8 @@ BufferPool::BufferPool(std::size_t block_size, std::uint32_t block_count)
   //   注意对齐：块起始地址要满足 alignof(std::max_align_t)
   //   注意 free list 用「索引」而不是「指针」，避免内存移动后失效
   memory_ = new std::byte[block_size_ * block_count_];
+  ref_counts_ = new std::uint32_t[block_count]();
+
   stats_ = {0, 0, block_count};
   free_idx_.reserve(block_count_);
   for (std::uint32_t i = 0; i < block_count_; ++i) {
@@ -82,6 +113,9 @@ BufferPool::BufferPool(std::size_t block_size, std::uint32_t block_count)
 BufferPool::~BufferPool() {
   if (memory_)
     delete[] memory_;
+  if (ref_counts_) {
+    delete[] ref_counts_;
+  }
 }
 
 Buffer BufferPool::acquire() {
@@ -89,7 +123,7 @@ Buffer BufferPool::acquire() {
     auto idx = free_idx_.back();
     free_idx_.pop_back();
     stats_.in_use++;
-    stats_.peak = std::max(stats_.capacity, stats_.in_use);
+    stats_.peak = std::max(stats_.peak, stats_.in_use);
     return Buffer{this, idx};
   }
   return Buffer{};
