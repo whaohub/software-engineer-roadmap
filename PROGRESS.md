@@ -8,7 +8,7 @@
 | 阶段 | 周次 | 主题 | 状态 | 产物 |
 |:--:|:--:|---|:--:|---|
 | S0 | W1 | 仓库整顿 + 标准定稿 | ✅ 完成 | `AGENTS.md` `NEXT.md` `PROGRESS.md` `Makefile` `scripts/` `plans/` `interview/` `middleware/README.md` |
-| A | W2-W6 | C++ 深水区（P1 M1 六单元 → P2 iceoryx → P3 二选一） | 🚧 进行中（0/6 单元） | `project/mini-pipeline/`（M1 12 用例就绪） |
+| A | W2-W6 | C++ 深水区（P1 M1 六单元 → P2 iceoryx → P3 二选一） | 🚧 进行中（5/6 单元；M1 功能完成，U6 与复盘待补） | `project/mini-pipeline/`（39 用例全绿；sizeof=16；ASan/UBSan、TSan 干净；probe RSS 6 MB） |
 | B | W7-W11 | Linux 系统层 | 📋 未开始 | - |
 | C | W12-W17 | 中间件 | 📋 未开始 | 目标：mini-ipc |
 | D | W18-W22 | 性能与确定性 | 📋 未开始 | 目标：性能分析报告 |
@@ -18,6 +18,7 @@
 
 | 日期 | 阶段 | 做了什么 | 产物 | 下一步 |
 |---|---|---|---|---|
+| 2026-11-20 | A | M1 句柄与内存池收尾：修 `valid = empty` 幽灵引用（赋值后无条件置空）与 `stats()` 数据竞争（计数改 atomic）；补齐并发/生命周期用例至 39 个全绿；ASan/UBSan、TSan 干净；probe 通过（RSS 6 MB）；sizeof=16 | `project/mini-pipeline/{include,src,tests}` `.gitignore` | N1（acquire≈34.5 ns 未达 <30 ns）+ `docs/M1-*` 复盘 + U6 iceoryx 对照 |
 | 2026-11-20 | A | 清理 `cpp/06-concurrency` demo 骨架（5 文档 + 10 桩 + 构建目录），README/CMake 还原至 HEAD，只保留 `demo_atomic`；改为遇问题再建 | `NEXT.md` `PROGRESS.md` | BufferPool 三处 P0（acquire 判空入锁、stats 无锁读、`valid=empty` 幽灵句柄） |
 | 2026-11-13 | A | 计划收敛：P1 六单元 + P2 定向读 iceoryx + P3 二选一；砍 M3/M5；删除 4 份过期日计划；对齐 NEXT/PLAN/TASK | `NEXT.md` `plans/2026-11-13.md` | U1 池底层 + free list |
 | 2026-11-09 | A | mini-pipeline 需求规格（R1-R16/N1-N6）+ 工业界对照；准入自测；Linux 前置与 `make probe`；修 `new-plan.sh` BSD date 与 bash 中文变量名两个 bug | `project/mini-pipeline/{REQUIREMENTS,PREREQ,LINUX-PREREQ}.md` `scripts/linux-probe.sh` `8b4500b 3152ee1` | M1 闸门（atomic + ADR-002） |
