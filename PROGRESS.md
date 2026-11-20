@@ -18,6 +18,7 @@
 
 | 日期 | 阶段 | 做了什么 | 产物 | 下一步 |
 |---|---|---|---|---|
+| 2026-11-20 | A | 清理 `cpp/06-concurrency` demo 骨架（5 文档 + 10 桩 + 构建目录），README/CMake 还原至 HEAD，只保留 `demo_atomic`；改为遇问题再建 | `NEXT.md` `PROGRESS.md` | BufferPool 三处 P0（acquire 判空入锁、stats 无锁读、`valid=empty` 幽灵句柄） |
 | 2026-11-13 | A | 计划收敛：P1 六单元 + P2 定向读 iceoryx + P3 二选一；砍 M3/M5；删除 4 份过期日计划；对齐 NEXT/PLAN/TASK | `NEXT.md` `plans/2026-11-13.md` | U1 池底层 + free list |
 | 2026-11-09 | A | mini-pipeline 需求规格（R1-R16/N1-N6）+ 工业界对照；准入自测；Linux 前置与 `make probe`；修 `new-plan.sh` BSD date 与 bash 中文变量名两个 bug | `project/mini-pipeline/{REQUIREMENTS,PREREQ,LINUX-PREREQ}.md` `scripts/linux-probe.sh` `8b4500b 3152ee1` | M1 闸门（atomic + ADR-002） |
 | 2026-11-09 | A | 链表：实现 `swapPairs`(LC24) + `isPalindrome`(LC234)，`03_reverse` TODO 5→1 | `03_reverse.cpp` `cf215d0` | 实现 `reverseListRecursive` |

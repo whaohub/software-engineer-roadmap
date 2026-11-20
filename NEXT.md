@@ -52,7 +52,7 @@
 
 ## 5. 阻塞 / 待决策
 
-- `cpp/06-concurrency` 有未提交改动（RAII `Thread` 包装 + atomic demo），按今日 Block A 先收尾再开工
+- 无。`cpp/06-concurrency` 的 demo 骨架已清理，回到 HEAD 状态（需要时再按问题重建）
 
 ## 6. 会话历史
 
