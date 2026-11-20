@@ -8,8 +8,10 @@
 //   std::bad_alloc，二选一并写进文档）
 #pragma once
 
+#include <atomic>
 #include <cstddef>
 #include <cstdint>
+#include <mutex>
 #include <vector>
 
 namespace mp {
@@ -73,11 +75,13 @@ private:
   friend class Buffer;
   void release(std::uint32_t index) noexcept;
 
+  std::mutex mutex_;
   std::byte *memory_;
-  std::uint32_t *ref_counts_;
+  std::atomic<std::uint32_t> *ref_counts_;
   std::vector<std::uint32_t> free_idx_;
+  std::atomic<std::uint32_t> in_use_{0};
+  std::atomic<std::uint32_t> peak_{0};
 
-  Stats stats_{};
   std::size_t block_size_ = 0;
   std::uint32_t block_count_ = 0;
 };
